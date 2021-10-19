@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour,IDamageable
 {
     private Rigidbody2D _body;
     [SerializeField]private float _jumpForce=10;
@@ -14,6 +14,9 @@ public class Player : MonoBehaviour
     private Animator _anim;
     private bool _grounded=false;
     private bool _resetJump;
+    [SerializeField]private LayerMask _groundLayer;
+
+    public int Health { get; set; }
 
     // Start is called before the first frame update
     void Start()
@@ -70,8 +73,8 @@ public class Player : MonoBehaviour
     }
     bool IsGrounded()
     {
-        float rayLength = 1f;
-        RaycastHit2D hitInfo = Physics2D.Raycast(transform.position,Vector2.down,rayLength);
+        float rayLength = 0.7f;
+        RaycastHit2D hitInfo = Physics2D.Raycast(transform.position,Vector2.down,rayLength,_groundLayer.value);
         Debug.DrawRay(transform.position, Vector2.down, Color.white);
         
         if (hitInfo.collider!=null)
@@ -89,5 +92,10 @@ public class Player : MonoBehaviour
         _resetJump = true;
         yield return new WaitForSeconds(0.7f);
         _resetJump = false;
+    }
+
+    public void Damage()
+    {
+        Debug.Log("Player: Damage()");
     }
 }
