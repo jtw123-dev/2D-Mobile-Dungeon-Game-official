@@ -18,7 +18,9 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField]protected Transform enemyPosition;
     protected float distance;
     protected Transform playerTransform;
-    protected Collider2D enemyCollider;   
+    protected Collider2D enemyCollider;
+    protected bool isDead = false;
+    [SerializeField] protected GameObject diamondPrefab;
     
     public virtual void Init()
     {
@@ -39,9 +41,7 @@ public abstract class Enemy : MonoBehaviour
         Physics2D.IgnoreCollision(enemyCollider, GetComponent<Collider2D>());
     }
     public virtual void Update()
-    {
-        
-        
+    {       
         distance = Vector3.Distance(playerTransform.transform.position, enemyPosition.transform.position);
         if (anim.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
         {
@@ -51,29 +51,51 @@ public abstract class Enemy : MonoBehaviour
                 anim.SetBool("InCombat", false);
             }
             return;
-        }      
-        Movement();   
+        }  
+        if (isDead==false)
+        {
+            Movement();
+        }
+       
     }
     public virtual void Movement()
     {
-        if (transform.position == pointA.position)
+        if (currentTarget == pointA.position)
         {
-            if (sprite.flipX == true)
-            {
-                sprite.flipX = false;
-            }
-            anim.SetTrigger("Idle");
-            currentTarget = pointB.position;
+            sprite.flipX = true;
         }
+        else
+        {
+            sprite.flipX = false;
+        }
+
+        if (transform.position==pointA.position)
+        {
+            currentTarget = pointB.position;
+            anim.SetTrigger("Idle");
+        }                
+        
         else if (transform.position == pointB.position)
         {
-            anim.SetTrigger("Idle");
-            sprite.flipX = true;
             currentTarget = pointA.position;
+            anim.SetTrigger("Idle");
         }
         if (isHit==false)
         {
             transform.position = Vector3.MoveTowards(transform.position, currentTarget, speed * Time.deltaTime);
+        }
+
+        Vector3 directionSwitch = player.transform.localPosition - transform.localPosition;
+
+        if (anim.GetBool("InCombat"))
+        {
+            if (directionSwitch.x > 0)
+                sprite.flipX = false;
+
+            else if (directionSwitch.x < 0)
+            {
+                sprite.flipX = true;
+            }
         }
     }
 }

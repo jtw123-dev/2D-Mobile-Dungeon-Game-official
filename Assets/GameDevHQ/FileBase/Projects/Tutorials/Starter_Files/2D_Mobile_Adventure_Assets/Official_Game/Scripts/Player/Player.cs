@@ -15,12 +15,14 @@ public class Player : MonoBehaviour,IDamageable
     private bool _grounded=false;
     private bool _resetJump;
     [SerializeField]private LayerMask _groundLayer;
-
+    public int health;
     public int Health { get; set; }
+    public int diamonds;
 
     // Start is called before the first frame update
     void Start()
     {
+        Health = health;
         _anim = GameObject.Find("Sprite").GetComponent<Animator>();
         _body = GetComponent<Rigidbody2D>();
         _swordRenderer = GameObject.Find("Sword_arc").GetComponent<SpriteRenderer>();
@@ -96,6 +98,11 @@ public class Player : MonoBehaviour,IDamageable
 
     public void Damage()
     {
+        health--;
         Debug.Log("Player: Damage()");
+        if (health <=0)
+        {
+            Destroy(this.gameObject);
+        }
     }
 }

@@ -13,24 +13,14 @@ public class Skeleton : Enemy,IDamageable
 
     public override void Movement()
     {
-        base.Movement();
-
-        Vector3 directionSwitch = player.transform.localPosition - transform.localPosition;
-
-        if ( anim.GetBool("InCombat"))
-        {
-            if ( directionSwitch.x > 0)
-            sprite.flipX = false;
-
-            else if (directionSwitch.x<0)
-            {
-                sprite.flipX = true;
-            }
-        }
-       
+        base.Movement();          
     }
     public void Damage()
     {
+        if (isDead ==true)
+        {
+            return;
+        }
         Debug.Log("Damage");
         health--;
         anim.SetTrigger("Hit");
@@ -39,7 +29,10 @@ public class Skeleton : Enemy,IDamageable
         
         if (health<=0)
         {
-            Destroy(gameObject);
+            isDead = true;
+            GameObject diamond = Instantiate(diamondPrefab, transform.position, Quaternion.identity);
+            diamond.GetComponent<Diamond>().gems = base.gems;
+            anim.SetTrigger("Death");
         }
     }
 }
