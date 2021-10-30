@@ -98,11 +98,22 @@ public class Player : MonoBehaviour,IDamageable
 
     public void Damage()
     {
-        health--;
-        Debug.Log("Player: Damage()");
-        if (health <=0)
+        if (health ==0)
         {
-            Destroy(this.gameObject);
+            return;
         }
+        health--;
+        UIManager.Instance.UpdateLives(health);
+        if (health <1)
+        {
+            Destroy(this.gameObject,2);
+
+            _playerAnim.Death();
+        }
+    }
+    public void AddGems(int Amount)
+    {
+        diamonds += Amount;
+        UIManager.Instance.UpdateGemCount(diamonds);
     }
 }

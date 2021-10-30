@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    public Image[] lives;
+    public Image currentLife;
     private static UIManager _instance;
     public static UIManager Instance
     {
@@ -20,7 +22,12 @@ public class UIManager : MonoBehaviour
 
     public Text playerGemCountText;
     public Image selectionImg;
+    public Text gemCountText;
 
+    private void Awake()
+    {
+        _instance = this;
+    }
     public void OpenShop(int gemCount)
     {
         playerGemCountText.text = "" + gemCount + "G";
@@ -31,10 +38,16 @@ public class UIManager : MonoBehaviour
         selectionImg.rectTransform.anchoredPosition = new Vector2(selectionImg.rectTransform.anchoredPosition.x, yPos);
     }
 
-
-    private void Awake()
+    public void UpdateGemCount(int count)
     {
-        _instance = this;
+        gemCountText.text = "" + count;
     }
 
+    public void UpdateLives(int livesRemaining)
+    {
+        for (int i =0;i<=livesRemaining;i++)
+        {       
+            lives[livesRemaining].gameObject.SetActive(false);       
+        }
+    }
 }
